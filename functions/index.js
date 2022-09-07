@@ -11,7 +11,7 @@ fcl.config({
   "flow.network": "testnet"
 })
 
-initializeApp();
+const app = initializeApp();
 const db = getFirestore();
 
 exports.generateNonce = functions.https.onCall( async (data, context) => {
@@ -34,6 +34,10 @@ exports.generateAuthToken = functions.https.onCall( async (data, context) => {
             msg: "Invalid Nonce"
         }
     }
+
+    nonceDoc.forEach(nonce => {
+        nonce.ref.delete()
+    })
 
     const isValid = await fcl.AppUtils.verifyAccountProof("DAO LLC Governance Portal (v0.1)", data)
 
